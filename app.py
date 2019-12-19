@@ -1,5 +1,7 @@
+import requests, json
 from flask import Flask, render_template, request
 app = Flask(__name__)
+
 
 @app.route('/')
 def home():
@@ -15,8 +17,25 @@ def study_image():
     # example we covered in the slides! 
 
     # YOUR CODE HERE!
+    headers = {'Authorization': '6b3f6a2329354c0f8c98645b51306fa2'}
+    api_url = "https://api.clarifai.com/v2/models/aaa03c23b3724a16a56b629203edc62c/outputs"
+    data = {"inputs": 
+    		[{
+				"data":{
+					"image":
+						{"url": "https://api.clarifai.com/v2/models/aaa03c23b3724a16a56b629203edc62c/outputs"}
+				}
+    		}]
+    	}
+
+    response = requests.post(api_url, headers=headers, data=json.dumps(data))
+    response_dict = json.loads(response.content)
     
-    return render_template('home.html', results="No results yet :(")
+    results = response_dict["outputs"][0]["data"]["concepts"]
+
+    #["outputs"][0]["data"]["concepts"]
+
+    return render_template('home.html', results = results)
 
 if __name__ == '__main__':
     app.run(debug=True)
